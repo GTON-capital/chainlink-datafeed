@@ -26,11 +26,18 @@ module.exports = {
     ropsten: {
       url: `https://ropsten.infura.io/v3/287b06b76784416b9f230b04235de663`,
       accounts: [`${ROPSTEN_PRIVATE_KEY}`]
+    },
+    ftmtest: {
+      url: `https://rpc.testnet.fantom.network/`,
+      accounts: [`${ROPSTEN_PRIVATE_KEY}`]
     }
   },
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     apiKey: "HJ8MIS1E84VWP8BH5P8D14HDATYS2XGIJZ"
+  },
+  ftmscan: {
+    apiKey: "F3JMSIZ28TUXYQJVS3CQDNWAXWWQ9CQBJ8"
   }
 };
