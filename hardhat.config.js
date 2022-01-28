@@ -19,7 +19,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-const ROPSTEN_PRIVATE_KEY = "484c37fe44f4ab3614b6babc0480b9bf7b13f43a76074dc2109c35b38b6825aa";
+require('./scripts/secrets');
 module.exports = {
   solidity: "0.8.4",
   networks: {
@@ -27,15 +27,19 @@ module.exports = {
       url: `https://ropsten.infura.io/v3/287b06b76784416b9f230b04235de663`,
       accounts: [`${ROPSTEN_PRIVATE_KEY}`]
     },
-    ftmtest: {
+    ftmTestnet: {
       url: `https://rpc.testnet.fantom.network/`,
-      accounts: [`${ROPSTEN_PRIVATE_KEY}`]
+      accounts: [`${ROPSTEN_PRIVATE_KEY}`],
+      chainId: 0xfa2,
     }
   },
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: "HJ8MIS1E84VWP8BH5P8D14HDATYS2XGIJZ"
+    apiKey: {
+      ropsten: "HJ8MIS1E84VWP8BH5P8D14HDATYS2XGIJZ",
+      ftmTestnet: "F3JMSIZ28TUXYQJVS3CQDNWAXWWQ9CQBJ8",
+    }
   },
   ftmscan: {
     apiKey: "F3JMSIZ28TUXYQJVS3CQDNWAXWWQ9CQBJ8"
