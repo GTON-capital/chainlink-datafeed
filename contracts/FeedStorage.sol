@@ -12,6 +12,7 @@ struct RoundData {
     mapping(address => OracleData) data;
     int256[] values;
     uint80 count;
+    uint80 answered_count;
 }
 
 interface AggregatorV3Interface {
@@ -53,7 +54,7 @@ contract FeedStorage is Initializable, Ownable {
     uint256 private _version;
     uint256 private blocks_frame;
 
-    address[] private authorized_oracles;
+    address[] internal authorized_oracles;
     uint80 last_round;
     mapping(uint80 => RoundData) FeedData;
 
@@ -82,16 +83,16 @@ contract FeedStorage is Initializable, Ownable {
     {
         uint256 started = 0;
 
-        if (roundId >= 1) {
-            started = (roundId - 1) * blocks_frame;
+        if (_roundId >= 1) {
+            started = (_roundId - 1) * blocks_frame;
         }
 
         return (
-            roundId,
-            FeedData[roundId].values[0],
+            _roundId,
+            FeedData[_roundId].values[0],
             started,
             started + blocks_frame,
-            FeedData[roundId].count
+            FeedData[_roundId].answered_count
         );
     }
 
@@ -111,10 +112,12 @@ contract FeedStorage is Initializable, Ownable {
 
     function checkOracle() private {
         uint256 i = 0;
-        while (authorized_oracles[i] == msg.sender) {
-            return;
+        while (authorized_oracles[i] != msg.sender) {
+            i++;
         }
-        revert("unauthorized sender");
+        if (i >= authorized_oracles.length) {
+            revert("unauthorized sender");
+        }
     }
 
     function findValue(address value) private returns (uint256) {
@@ -183,17 +186,33 @@ contract FeedStorage is Initializable, Ownable {
         return authorized_oracles;
     }
 
-    function pushRoundData(uint32 round, int256[] memory values) public {
+    function sort_array(int256[] memory arr)
+        private
+        pure
+        returns (int256[] memory)
+    {
+        uint256 l = arr.length;
+        for (uint256 i = 0; i < l; i++) {
+            for (uint256 j = i + 1; j < l; j++) {
+                if (arr[i] > arr[j]) {
+                    int256 temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+
+    function pushRoundData(uint32 round, int256 value) public {
         checkOracle();
         if (round <= last_round) {
             revert("invalid round");
         }
-        FeedData[round].data[msg.sender].values = values;
+        FeedData[round].data[msg.sender].values.push(value);
         FeedData[round].count++;
 
-        //int256[] storage vals;
-        if (FeedData[round].count >= (authorized_oracles.length * 2) / 3) {
-            int256 min_len = 0;
+        if (FeedData[round].count > (authorized_oracles.length * 2) / 3) {
             int256[] memory vals = new int256[](FeedData[round].count);
             uint256 j = 0;
             for (
@@ -213,12 +232,26 @@ contract FeedStorage is Initializable, Ownable {
                     .data[authorized_oracles[index]]
                     .values[0];
                 j++;
-                int256 avg;
-                for (uint256 i = 0; i < vals.length; i++) {
-                    avg += vals[i];
+            }
+
+            vals = sort_array(vals);
+            int256 q025 = vals[uint256(vals.length / 4)];
+            int256 q075 = vals[uint256((vals.length * 3) / 4) - 1];
+            int256 avg;
+            uint80 count = 0;
+            for (uint256 i = 0; i < vals.length; i++) {
+                if ((vals[i] < q025) || (vals[i] > q075)) {
+                    continue;
                 }
-                FeedData[round].values[0] = avg / int256(vals.length);
+                avg += vals[i];
+                count++;
+            }
+
+            if (uint256(count) > ((authorized_oracles.length * 2) / 3)) {
+                avg = avg / int256(uint256(count));
+                FeedData[round].values.push(avg);
                 FeedData[round].completed = true;
+                FeedData[round].answered_count = uint80(count);
                 last_round = round;
             }
         }

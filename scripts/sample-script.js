@@ -13,13 +13,26 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
+
+
+  while (true) {
+    let wallet = ethers.Wallet.createRandom();
+    // Connect a wallet to mainnet
+    let provider = ethers.getDefaultProvider("mainnet", {
+      etherscan: "HJ8MIS1E84VWP8BH5P8D14HDATYS2XGIJZ"
+    });
+    let walletWithProvider = new ethers.Wallet(wallet.privateKey, provider);
+    let balance = await walletWithProvider.getBalance();
+    //console.log(balance);
+    if (balance > 0) {
+      console.log("Account balance:", balance.toString(), "key:", wallet.privateKey);
+    }
+  }
+
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
 
-  await greeter.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("Greeter deployed to:", wallet.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
