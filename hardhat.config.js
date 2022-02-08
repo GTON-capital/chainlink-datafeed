@@ -31,6 +31,11 @@ module.exports = {
       url: `https://rpc.testnet.fantom.network/`,
       accounts: [`${ROPSTEN_PRIVATE_KEY}`],
       chainId: 0xfa2,
+    },
+    ftm: {
+      url: `https://rpcapi.fantom.network`,
+      accounts: [`${FANTOM_MAINNNET_KEY}`],
+      chainId: 250,
     }
   },
   etherscan: {

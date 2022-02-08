@@ -236,7 +236,12 @@ contract FeedStorage is Initializable, Ownable {
 
             vals = sort_array(vals);
             int256 q025 = vals[uint256(vals.length / 4)];
-            int256 q075 = vals[uint256((vals.length * 3) / 4) - 1];
+            int256 q075index = (int256(vals.length) * 3) / 4 - 1;
+            if (q075index < 0) {
+                q075index = 0;
+            }
+            int256 q075 = vals[uint256(q075index)];
+            console.log("karamba");
             int256 avg;
             uint80 count = 0;
             for (uint256 i = 0; i < vals.length; i++) {

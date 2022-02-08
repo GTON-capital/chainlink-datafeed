@@ -33,6 +33,26 @@ describe("FeedStorage", function () {
     await storage.connect(oracle4).pushRoundData(1, 15);
     console.log("oracle 5 push");
     await storage.connect(oracle5).pushRoundData(1, 10);
+    // let round = await storage.latestRoundData();
+    // expect(await storage.greet()).to.equal("Hola, mundo!");
+  });
+
+  it("Should push round data by one oracle", async function () {
+    const FeedStorage = await ethers.getContractFactory("FeedStorage");
+    const storage = await FeedStorage.deploy("Hello, world!", 10, 1, 2000);
+
+    await storage.deployed();
+
+    const [oracle1] = await ethers.getSigners();
+
+    expect(await storage.oracles()).to.deep.equal([]);
+    await storage.addOracles([oracle1.address]);
+    console.log("oracles ", await storage.oracles());
+    // array.forEach(element => {
+
+    // });
+    console.log("oracle 1 push ", oracle1.address);
+    await storage.connect(oracle1).pushRoundData(1, 10);
     let round = await storage.latestRoundData();
     console.log(round);
     // expect(await storage.greet()).to.equal("Hola, mundo!");
