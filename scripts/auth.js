@@ -7,14 +7,14 @@ async function main() {
 
     const Feed = await ethers.getContractFactory("FeedStorage");
     //0x10739AA10D003e7C4B2c2270779ACB9E0B26d0fA
-    const feed = await Feed.attach("0x041D7FC5afCf9dCa535769782B80b58370C8F874");
+    const feed = await Feed.attach("0x2e4b44c45E081E5C200250Ae8f8f18876D49A555");
     //const token = await Token.deploy("GTON/USD", 10, 1, 2000);
-    // const res = await feed.addOracles(["0x8571dc5158955491eb887f448b5369449bcbb44a"]);
-    // const res3 = await feed.removeOracles(["0x10739AA10D003e7C4B2c2270779ACB9E0B26d0fA"]);
-    // console.log("Res:", res3);
+    //const res = await feed.addOracles(["0x09275Efe9752C094E52835A2cc89CFF9125eA135"]);
+    //const res = await feed.removeOracles(["0xca10Bb5fF4D02EDb353FB07a8ceCef81aFE92465"]);
+    //console.log("Res:", res);
 
-    // const res2 = await feed.oracles();
-    // console.log("Res:", res2);
+    const res2 = await feed.oracles();
+    console.log("Res:", res2);
     const res = await feed.latestRoundData();
     console.log("Res:", res);
 }
@@ -25,3 +25,4 @@ main()
         console.error(error);
         process.exit(1);
     });
+//0x2e4b44c45E081E5C200250Ae8f8f18876D49A555

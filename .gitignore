@@ -9,3 +9,5 @@ cache
 artifacts
 scripts/secrets.js
 scripts/sample-script.js
+.openzeppelin
+flatten.sol

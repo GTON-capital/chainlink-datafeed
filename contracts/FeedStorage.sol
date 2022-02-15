@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+// import "@openzeppelin/contracts/math/SafeMath.sol";
 struct OracleData {
     int256[] values;
 }
@@ -48,7 +49,9 @@ interface AggregatorV3Interface {
         );
 }
 
-contract FeedStorage is Initializable, Ownable {
+contract FeedStorage is Initializable, OwnableUpgradeable {
+    // using SafeMath for uint256;
+
     string private _description;
     uint8 private _decimals;
     uint256 private _version;
@@ -167,15 +170,8 @@ contract FeedStorage is Initializable, Ownable {
         _description = _desc;
         _version = _ver;
         _decimals = _dec;
-    }
-
-    constructor(
-        string memory _desc,
-        uint8 _dec,
-        uint256 _ver,
-        uint256 _blocks_frame
-    ) {
-        initialize(_desc, _dec, _ver, _blocks_frame);
+        blocks_frame = _blocks_frame;
+        __Ownable_init();
     }
 
     function feed_name() public view returns (string memory) {

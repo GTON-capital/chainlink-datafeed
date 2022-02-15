@@ -30,9 +30,9 @@ module.exports = {
     ftmTestnet: {
       url: `https://rpc.testnet.fantom.network/`,
       accounts: [`${ROPSTEN_PRIVATE_KEY}`],
-      chainId: 0xfa2,
+      chainId: 0xfa2
     },
-    ftm: {
+    opera: {
       url: `https://rpcapi.fantom.network`,
       accounts: [`${FANTOM_MAINNNET_KEY}`],
       chainId: 250,
