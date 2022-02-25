@@ -19,22 +19,22 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 
-require('./scripts/secrets');
+secrets = require('./scripts/secrets');
 module.exports = {
   solidity: "0.8.4",
   networks: {
     ropsten: {
       url: `https://ropsten.infura.io/v3/287b06b76784416b9f230b04235de663`,
-      accounts: [`${ROPSTEN_PRIVATE_KEY}`]
+      accounts: [`${secrets.ROPSTEN_PRIVATE_KEY}`]
     },
     ftmTestnet: {
       url: `https://rpc.testnet.fantom.network/`,
-      accounts: [`${ROPSTEN_PRIVATE_KEY}`],
+      accounts: [`${secrets.ROPSTEN_PRIVATE_KEY}`],
       chainId: 0xfa2,
     },
     ftm: {
       url: `https://rpcapi.fantom.network`,
-      accounts: [`${FANTOM_MAINNNET_KEY}`],
+      accounts: [`${secrets.FANTOM_MAINNNET_KEY}`],
       chainId: 250,
     }
   },
